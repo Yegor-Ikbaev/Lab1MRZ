@@ -1,7 +1,7 @@
-package by.yegorikbaev.mrz.weightsgenerator.impl;
+package by.yegorikbaev.mrz.compressor.impl;
 
 import by.yegorikbaev.mrz.bean.Matrix;
-import by.yegorikbaev.mrz.weightsgenerator.WeightsGenerator;
+import by.yegorikbaev.mrz.compressor.WeightsGenerator;
 import org.springframework.stereotype.Service;
 
 import java.security.SecureRandom;
@@ -11,6 +11,7 @@ public class DefaultWeightsGenerator implements WeightsGenerator {
 
     @Override
     public Matrix generate(final int rows, final int columns) {
+        validate(rows, columns);
         SecureRandom random = new SecureRandom();
         double[][] matrix = new double[rows][columns];
         for (int i = 0; i < rows; i++) {
@@ -19,5 +20,11 @@ public class DefaultWeightsGenerator implements WeightsGenerator {
             }
         }
         return new Matrix(matrix);
+    }
+
+    private void validate(final int rows, final int columns) {
+        if (rows < 0 || columns < 0) {
+            throw new IllegalArgumentException("Rows number or columns number is negative");
+        }
     }
 }

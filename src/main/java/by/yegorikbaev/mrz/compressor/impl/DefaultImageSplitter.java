@@ -1,7 +1,7 @@
-package by.yegorikbaev.mrz.splitter.impl;
+package by.yegorikbaev.mrz.compressor.impl;
 
 import by.yegorikbaev.mrz.bean.SplittedImage;
-import by.yegorikbaev.mrz.splitter.ImageSplitter;
+import by.yegorikbaev.mrz.compressor.ImageSplitter;
 import org.springframework.stereotype.Service;
 
 import javax.validation.constraints.NotNull;

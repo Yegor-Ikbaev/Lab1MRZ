@@ -1,4 +1,4 @@
-package by.yegorikbaev.mrz.converter;
+package by.yegorikbaev.mrz.compressor;
 
 import by.yegorikbaev.mrz.bean.Matrix;
 import by.yegorikbaev.mrz.bean.SplittedImage;

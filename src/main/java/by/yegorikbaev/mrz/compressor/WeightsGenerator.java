@@ -1,4 +1,4 @@
-package by.yegorikbaev.mrz.weightsgenerator;
+package by.yegorikbaev.mrz.compressor;
 
 import by.yegorikbaev.mrz.bean.Matrix;
 

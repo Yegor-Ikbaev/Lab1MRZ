@@ -1,7 +1,7 @@
-package by.yegorikbaev.mrz.restorer.impl;
+package by.yegorikbaev.mrz.compressor.impl;
 
 import by.yegorikbaev.mrz.bean.SplittedImage;
-import by.yegorikbaev.mrz.restorer.Restorer;
+import by.yegorikbaev.mrz.compressor.Restorer;
 import org.springframework.stereotype.Service;
 
 import java.awt.*;
