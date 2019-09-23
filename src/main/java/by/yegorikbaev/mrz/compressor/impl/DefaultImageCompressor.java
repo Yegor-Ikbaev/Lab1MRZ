@@ -82,12 +82,20 @@ public class DefaultImageCompressor implements ImageCompressor {
                 Matrix X_ = Y.multiply(secondLayer);
                 training[index++] = X_;
                 Matrix dX = X_.minus(vector);
-                E += dX.multiply(dX.transpose()).sum();
+                E += calculateError(dX);
             }
             iteration++;
         } while (E > configuration.getMaximalError());
         System.out.println(iteration);
         return training;
+    }
+
+    private double calculateError(Matrix matrix) {
+        double error = 0.0;
+        for (double value : matrix.getAsArray()[0]) {
+            error += value * value;
+        }
+        return error;
     }
 
     private void convert(@NotNull SplittedImage image, Matrix[] matrices) {
