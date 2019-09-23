@@ -10,9 +10,12 @@ import org.springframework.stereotype.Service;
 import javax.validation.constraints.NotNull;
 import java.awt.*;
 import java.awt.image.BufferedImage;
+import java.util.logging.Logger;
 
 @Service
 public class DefaultImageCompressor implements ImageCompressor {
+
+    private static final Logger LOGGER = Logger.getLogger(DefaultImageCompressor.class.getName());
 
     private ImageSplitter imageSplitter;
 
@@ -51,8 +54,11 @@ public class DefaultImageCompressor implements ImageCompressor {
         Matrix firstLayerWeights =
                 weightsGenerator.generate(configuration.getPixelsInRectangle(), configuration.getNeuronsNumber());
         Matrix secondLayerWeights = firstLayerWeights.transpose();
+        long beforeTraining = System.currentTimeMillis();
         Matrix[] resultWeights = train(firstLayerWeights, secondLayerWeights, configuration, vectors);
+        long afterTraining = System.currentTimeMillis();
         convert(splittedImage, resultWeights);
+        log(configuration, afterTraining - beforeTraining);
         return imageRestorer.restore(splittedImage);
     }
 
@@ -70,6 +76,7 @@ public class DefaultImageCompressor implements ImageCompressor {
     private Matrix[] train(Matrix firstLayer, Matrix secondLayer, Configuration configuration, Matrix[] vectors) {
         Matrix[] training = new Matrix[vectors.length];
         double summaryError;
+        int iteration = 0;
         do {
             summaryError = 0.0;
             int indexOfMatrix = 0;
@@ -93,7 +100,10 @@ public class DefaultImageCompressor implements ImageCompressor {
                 Matrix delta = resultVector.minus(vector);
                 summaryError += calculateError(delta);
             }
+            iteration++;
+            LOGGER.info(String.format("Summary error = %f in iteration = %d", summaryError, iteration));
         } while (summaryError > configuration.getMaximalError());
+        LOGGER.info(String.format("Final summary error = %f in iteration = %d", summaryError, iteration));
         return training;
     }
 
@@ -134,5 +144,13 @@ public class DefaultImageCompressor implements ImageCompressor {
     private int normalizeColor(double value) {
         int result = (int) (MAX_COLOR_VALUE * (value + 1) / 2);
         return Math.max(Math.min(result, MAX_COLOR_VALUE), MIN_COLOR_VALUE);
+    }
+
+    private void log(Configuration configuration, long time) {
+        LOGGER.info(String.format("Maximal error = %f", configuration.getMaximalError()));
+        LOGGER.info(String.format("Coefficient of training = %f", configuration.getCoefficientOfTraining()));
+        LOGGER.info(String.format("Coefficient of compression = %f", configuration.getCoefficientOfCompression()));
+        LOGGER.info(String.format("Neurons in hidden layer = %d", configuration.getNeuronsNumber()));
+        LOGGER.info(String.format("Time for training = %d milliseconds", time));
     }
 }

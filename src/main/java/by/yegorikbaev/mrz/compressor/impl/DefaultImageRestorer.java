@@ -7,12 +7,15 @@ import org.springframework.stereotype.Service;
 import javax.validation.constraints.NotNull;
 import java.awt.*;
 import java.awt.image.BufferedImage;
+import java.util.logging.Logger;
 
 @Service
 public class DefaultImageRestorer implements ImageRestorer {
 
+    private static final Logger LOGGER = Logger.getLogger(DefaultImageRestorer.class.getName());
+
     @Override
-    public BufferedImage restore(@NotNull SplittedImage image) {
+    public @NotNull BufferedImage restore(@NotNull SplittedImage image) {
         BufferedImage target = new BufferedImage(image.getSourceImage().getWidth(), image.getSourceImage().getHeight(),
                 BufferedImage.TYPE_INT_RGB);
         Graphics graphics = target.getGraphics();
@@ -44,6 +47,11 @@ public class DefaultImageRestorer implements ImageRestorer {
         int pointY = image.getSourceImage().getHeight() - height;
         BufferedImage subImage = image.getSubimages()[lastHeightRectangle][lastWidthRectangle];
         graphics.drawImage(subImage, pointX, pointY, width, height, null);
+        log(target);
         return target;
+    }
+
+    private void log(BufferedImage image) {
+        LOGGER.info(String.format("Restored image (%d x %d)", image.getWidth(), image.getHeight()));
     }
 }
