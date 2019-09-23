@@ -48,6 +48,7 @@ public class Configuration {
         maximalError = configuration.maximalError;
         format = configuration.format;
         pathToSave = configuration.pathToSave;
+        pathToSource = configuration.pathToSource;
     }
 
     public int getWidth() {
