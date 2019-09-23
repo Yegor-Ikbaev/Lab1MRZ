@@ -13,7 +13,7 @@ public class Matrix {
         this.source = PrimitiveMatrix.FACTORY.rows(matrix);
     }
 
-    private Matrix(PrimitiveMatrix matrix) {
+    private Matrix(@NotNull PrimitiveMatrix matrix) {
         this.source = matrix;
     }
 
@@ -29,7 +29,7 @@ public class Matrix {
         return new Matrix(source.transpose());
     }
 
-    public Matrix minus(Matrix arg) {
+    public Matrix minus(@NotNull Matrix arg) {
         return new Matrix(source.subtract(arg.source));
     }
 
@@ -37,11 +37,11 @@ public class Matrix {
         return source.aggregateAll(Aggregator.SUM);
     }
 
-    public double[][] getAsArray() {
+    public @NotNull double[][] getAsArray() {
         return source.toRawCopy2D();
     }
 
-    public Matrix update(Matrix matrix) {
+    public Matrix update(@NotNull Matrix matrix) {
         source = matrix.source;
         return this;
     }

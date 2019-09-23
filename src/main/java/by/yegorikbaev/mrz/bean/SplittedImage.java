@@ -1,5 +1,6 @@
 package by.yegorikbaev.mrz.bean;
 
+import javax.validation.constraints.NotNull;
 import java.awt.image.BufferedImage;
 
 public class SplittedImage {
@@ -20,19 +21,19 @@ public class SplittedImage {
 
     private int rectanglesInHeight;
 
-    public BufferedImage getSourceImage() {
+    public @NotNull BufferedImage getSourceImage() {
         return sourceImage;
     }
 
-    public void setSourceImage(BufferedImage sourceImage) {
+    public void setSourceImage(@NotNull BufferedImage sourceImage) {
         this.sourceImage = sourceImage;
     }
 
-    public BufferedImage[][] getSubimages() {
+    public @NotNull BufferedImage[][] getSubimages() {
         return subimages;
     }
 
-    public void setSubimages(BufferedImage[][] subimages) {
+    public void setSubimages(@NotNull BufferedImage[][] subimages) {
         this.subimages = subimages;
     }
 

@@ -33,6 +33,9 @@ public class Configuration {
     @Value("${configuration.savePath}")
     private String pathToSave;
 
+    @Value("${configuration.sourcePath}")
+    private String pathToSource;
+
     private double coefficientOfCompression;
 
     public void setConfiguration(Configuration configuration) {
@@ -117,5 +120,13 @@ public class Configuration {
 
     public void setCoefficientOfCompression(double coefficientOfCompression) {
         this.coefficientOfCompression = coefficientOfCompression;
+    }
+
+    public String getPathToSource() {
+        return pathToSource;
+    }
+
+    public void setPathToSource(String pathToSource) {
+        this.pathToSource = pathToSource;
     }
 }
