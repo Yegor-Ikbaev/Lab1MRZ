@@ -7,6 +7,7 @@ import by.yegorikbaev.mrz.io.ImageSaver;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
+import javax.validation.constraints.NotNull;
 import java.awt.image.BufferedImage;
 
 class ApplicationRunner {
@@ -19,16 +20,16 @@ class ApplicationRunner {
 
     private ImageSaver saver = context.getBean("defaultImageSaver", ImageSaver.class);
 
-    public void run(String path, Configuration configuration) {
+    void run(@NotNull Configuration configuration) {
         setValues(configuration);
-        BufferedImage sourceImage = loader.load(path);
-        saver.save(sourceImage, path, configuration.getFormat());
+        BufferedImage sourceImage = loader.load(configuration.getPathToSource());
+        saver.save(sourceImage, configuration.getPathToSource(), configuration.getFormat());
         BufferedImage targetImage = compressor.compress(sourceImage, configuration);
         saver.save(targetImage, configuration.getPathToSave(), configuration.getFormat());
     }
 
-    private void setValues(Configuration configuration) {
+    private void setValues(Configuration targetConfiguration) {
         Configuration defaultConfiguration = context.getBean("configuration", Configuration.class);
-        configuration.setConfiguration(defaultConfiguration);
+        targetConfiguration.setConfiguration(defaultConfiguration);
     }
 }
