@@ -16,7 +16,7 @@ public class Configuration {
     @Value("${configuration.n}")
     private int heightOfRectangle;
 
-    private int elementsNumber;
+    private int totalRectangles;
 
     @Value("${configuration.p}")
     private int neuronsNumber;
@@ -38,10 +38,11 @@ public class Configuration {
 
     private double coefficientOfCompression;
 
+    private int pixelsInRectangle;
+
     public void setConfiguration(Configuration configuration) {
         widthOfRectangle = configuration.widthOfRectangle;
         heightOfRectangle = configuration.heightOfRectangle;
-        elementsNumber = configuration.elementsNumber;
         neuronsNumber = configuration.neuronsNumber;
         coefficientOfTraining = configuration.coefficientOfTraining;
         coefficientOfCompression = configuration.coefficientOfCompression;
@@ -49,6 +50,7 @@ public class Configuration {
         format = configuration.format;
         pathToSave = configuration.pathToSave;
         pathToSource = configuration.pathToSource;
+        pixelsInRectangle = configuration.pixelsInRectangle;
     }
 
     public int getWidth() {
@@ -67,12 +69,12 @@ public class Configuration {
         this.heightOfRectangle = heightOfRectangle;
     }
 
-    public int getElementsNumber() {
-        return elementsNumber;
+    public int getTotalRectangles() {
+        return totalRectangles;
     }
 
-    public void setElementsNumber(int elementsNumber) {
-        this.elementsNumber = elementsNumber;
+    public void setTotalRectangles(int totalRectangles) {
+        this.totalRectangles = totalRectangles;
     }
 
     public int getNeuronsNumber() {
@@ -129,5 +131,13 @@ public class Configuration {
 
     public void setPathToSource(String pathToSource) {
         this.pathToSource = pathToSource;
+    }
+
+    public int getPixelsInRectangle() {
+        return pixelsInRectangle;
+    }
+
+    public void setPixelsInRectangle(int pixelsInRectangle) {
+        this.pixelsInRectangle = pixelsInRectangle;
     }
 }

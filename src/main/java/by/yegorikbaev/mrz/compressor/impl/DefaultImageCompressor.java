@@ -3,11 +3,7 @@ package by.yegorikbaev.mrz.compressor.impl;
 import by.yegorikbaev.mrz.bean.Configuration;
 import by.yegorikbaev.mrz.bean.Matrix;
 import by.yegorikbaev.mrz.bean.SplittedImage;
-import by.yegorikbaev.mrz.compressor.ImageCompressor;
-import by.yegorikbaev.mrz.compressor.ImageToMatrixConverter;
-import by.yegorikbaev.mrz.compressor.Restorer;
-import by.yegorikbaev.mrz.compressor.ImageSplitter;
-import by.yegorikbaev.mrz.compressor.WeightsGenerator;
+import by.yegorikbaev.mrz.compressor.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -48,48 +44,56 @@ public class DefaultImageCompressor implements ImageCompressor {
 
     @Override
     public BufferedImage compress(@NotNull BufferedImage sourceImage, @NotNull Configuration configuration) {
-        SplittedImage splittedImage = imageSplitter.split(sourceImage, configuration.getWidth(), configuration.getHeight());
+        SplittedImage splittedImage =
+                imageSplitter.split(sourceImage, configuration.getWidth(), configuration.getHeight());
         prepareConfiguration(splittedImage, configuration);
         Matrix[] vectors = imageConverter.convert(splittedImage);
-        Matrix firstLayer = weightsGenerator.generate(configuration.getWidth() * configuration.getHeight() * 3, configuration.getNeuronsNumber());
-        Matrix secondLayer = firstLayer.transpose();
-        Matrix[] training = train(firstLayer, secondLayer, configuration, vectors);
-        convert(splittedImage, training);
+        Matrix firstLayerWeights =
+                weightsGenerator.generate(configuration.getPixelsInRectangle(), configuration.getNeuronsNumber());
+        Matrix secondLayerWeights = firstLayerWeights.transpose();
+        Matrix[] resultWeights = train(firstLayerWeights, secondLayerWeights, configuration, vectors);
+        convert(splittedImage, resultWeights);
         return restorer.restore(splittedImage);
     }
 
+    private static final int RGB_COEFFICIENT = 3;
+
     private void prepareConfiguration(SplittedImage splittedImage, Configuration configuration) {
-        configuration.setElementsNumber(splittedImage.getTotalRectangles());
-        double N = configuration.getWidth() * configuration.getHeight() * 3;
-        double L = configuration.getElementsNumber();
-        double coefficientOfCompression = (N * L) / ((N + L) * configuration.getNeuronsNumber() + 2);
+        configuration.setTotalRectangles(splittedImage.getTotalRectangles());
+        int pixelsInRectangle = configuration.getWidth() * configuration.getHeight() * RGB_COEFFICIENT;
+        configuration.setPixelsInRectangle(pixelsInRectangle);
+        double coefficientOfCompression = (pixelsInRectangle * configuration.getTotalRectangles()) /
+                ((pixelsInRectangle + configuration.getTotalRectangles()) * configuration.getNeuronsNumber() + 2);
         configuration.setCoefficientOfCompression(coefficientOfCompression);
     }
 
     private Matrix[] train(Matrix firstLayer, Matrix secondLayer, Configuration configuration, Matrix[] vectors) {
         Matrix[] training = new Matrix[vectors.length];
-        double E;
-        int index;
-        int iteration = 0;
+        double summaryError;
         do {
-            E = 0.0;
-            index = 0;
+            summaryError = 0.0;
+            int indexOfMatrix = 0;
             for (Matrix vector : vectors) {
-                Matrix Y = vector.multiply(firstLayer);
-                Matrix X_ = Y.multiply(secondLayer);
-                Matrix dX = X_.minus(vector);
-                firstLayer.update(firstLayer.minus(vector.transpose().multiply(configuration.getCoefficientOfTraining()).multiply(dX).multiply(secondLayer.transpose())));
-                secondLayer.update(secondLayer.minus(Y.transpose().multiply(configuration.getCoefficientOfTraining()).multiply(dX)));
+                Matrix tempVector = vector.multiply(firstLayer);
+                Matrix resultVector = tempVector.multiply(secondLayer);
+                Matrix delta = resultVector.minus(vector);
+                firstLayer.update(firstLayer.minus(vector
+                        .transpose()
+                        .multiply(configuration.getCoefficientOfTraining())
+                        .multiply(delta)
+                        .multiply(secondLayer.transpose())));
+                secondLayer.update(secondLayer.minus(tempVector
+                        .transpose()
+                        .multiply(configuration.getCoefficientOfTraining())
+                        .multiply(delta)));
             }
             for (Matrix vector : vectors) {
-                Matrix Y = vector.multiply(firstLayer);
-                Matrix X_ = Y.multiply(secondLayer);
-                training[index++] = X_;
-                Matrix dX = X_.minus(vector);
-                E += calculateError(dX);
+                Matrix resultVector = vector.multiply(firstLayer).multiply(secondLayer);
+                training[indexOfMatrix++] = resultVector;
+                Matrix delta = resultVector.minus(vector);
+                summaryError += calculateError(delta);
             }
-            iteration++;
-        } while (E > configuration.getMaximalError());
+        } while (summaryError > configuration.getMaximalError());
         return training;
     }
 
@@ -102,32 +106,33 @@ public class DefaultImageCompressor implements ImageCompressor {
     }
 
     private void convert(@NotNull SplittedImage image, Matrix[] matrices) {
-        int index = 0;
-        for (int indexInWidth = 0; indexInWidth < image.getRectanglesInWidth(); indexInWidth++) {
-            for (int indexInHeight = 0; indexInHeight < image.getRectanglesInHeight(); indexInHeight++) {
-                convertSubimage(image.getSubimages()[indexInWidth][indexInHeight], image, matrices[index++].getAsArray());
+        int indexOfMatrix = 0;
+        for (int indexOfWidth = 0; indexOfWidth < image.getRectanglesInWidth(); indexOfWidth++) {
+            for (int indexOfHeight = 0; indexOfHeight < image.getRectanglesInHeight(); indexOfHeight++) {
+                convertSubimage(image.getSubimages()[indexOfWidth][indexOfHeight],
+                        image, matrices[indexOfMatrix++].getAsArray());
             }
         }
     }
 
     private void convertSubimage(BufferedImage subimage, SplittedImage image, double[][] matrix) {
-        for (int i = 0; i < subimage.getWidth(); i++) {
-            for (int j = 0; j < subimage.getHeight(); j++) {
-                int coefficient = 3 * (i + j * image.getHeight());
+        for (int indexOfWidth = 0; indexOfWidth < subimage.getWidth(); indexOfWidth++) {
+            for (int indexOfHeight = 0; indexOfHeight < subimage.getHeight(); indexOfHeight++) {
+                int coefficient = RGB_COEFFICIENT * (indexOfWidth + indexOfHeight * image.getHeight());
                 int r = normalizeColor(matrix[0][coefficient]);
                 int g = normalizeColor(matrix[0][1 + coefficient]);
                 int b = normalizeColor(matrix[0][2 + coefficient]);
-                Color color = new Color(r, g ,b);
-                subimage.setRGB(i, j, color.getRGB());
+                subimage.setRGB(indexOfWidth, indexOfHeight, new Color(r, g, b).getRGB());
             }
         }
     }
 
     private static final int MAX_COLOR_VALUE = 255;
 
+    private static final int MIN_COLOR_VALUE = 0;
+
     private int normalizeColor(double value) {
-        int result = Double.valueOf(MAX_COLOR_VALUE * (value + 1) / 2).intValue();
-        result = Math.min(result, 255);
-        return Math.max(result, 0);
+        int result = (int) (MAX_COLOR_VALUE * (value + 1) / 2);
+        return Math.max(Math.min(result, MAX_COLOR_VALUE), MIN_COLOR_VALUE);
     }
 }
