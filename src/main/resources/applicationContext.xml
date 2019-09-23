@@ -9,4 +9,5 @@
 
     <context:component-scan base-package="by.yegorikbaev.mrz"/>
 
+    <context:property-placeholder location="classpath:configuration.properties"/>
 </beans>

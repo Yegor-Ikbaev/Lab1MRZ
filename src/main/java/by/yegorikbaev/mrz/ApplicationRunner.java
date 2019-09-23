@@ -20,9 +20,15 @@ class ApplicationRunner {
     private ImageSaver saver = context.getBean("defaultImageSaver", ImageSaver.class);
 
     public void run(String path, Configuration configuration) {
+        setValues(configuration);
         BufferedImage sourceImage = loader.load(path);
         saver.save(sourceImage, path, configuration.getFormat());
         BufferedImage targetImage = compressor.compress(sourceImage, configuration);
         saver.save(targetImage, configuration.getPathToSave(), configuration.getFormat());
+    }
+
+    private void setValues(Configuration configuration) {
+        Configuration defaultConfiguration = context.getBean("configuration", Configuration.class);
+        configuration.setConfiguration(defaultConfiguration);
     }
 }

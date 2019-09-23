@@ -1,22 +1,51 @@
 package by.yegorikbaev.mrz.bean;
 
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.PropertySource;
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Component;
+
+@PropertySource("classpath:configuration.properties")
+@Component
+@Scope("prototype")
 public class Configuration {
 
-    private int widthOfRectangle = 4;
+    @Value("${configuration.m}")
+    private int widthOfRectangle;
 
-    private int heightOfRectangle = 4;
+    @Value("${configuration.n}")
+    private int heightOfRectangle;
 
     private int elementsNumber;
 
+    @Value("${configuration.p}")
     private int neuronsNumber;
 
-    private double coefficientOfTraining = 0.005;
+    @Value("${configuration.a}")
+    private double coefficientOfTraining;
 
+    @Value("${configuration.e}")
     private double maximalError;
 
-    private String format = "png";
+    @Value("${configuration.format}")
+    private String format;
 
+    @Value("${configuration.savePath}")
     private String pathToSave;
+
+    private double coefficientOfCompression;
+
+    public void setConfiguration(Configuration configuration) {
+        widthOfRectangle = configuration.widthOfRectangle;
+        heightOfRectangle = configuration.heightOfRectangle;
+        elementsNumber = configuration.elementsNumber;
+        neuronsNumber = configuration.neuronsNumber;
+        coefficientOfTraining = configuration.coefficientOfTraining;
+        coefficientOfCompression = configuration.coefficientOfCompression;
+        maximalError = configuration.maximalError;
+        format = configuration.format;
+        pathToSave = configuration.pathToSave;
+    }
 
     public int getWidth() {
         return widthOfRectangle;
@@ -80,5 +109,13 @@ public class Configuration {
 
     public void setPathToSave(String pathToSave) {
         this.pathToSave = pathToSave;
+    }
+
+    public double getCoefficientOfCompression() {
+        return coefficientOfCompression;
+    }
+
+    public void setCoefficientOfCompression(double coefficientOfCompression) {
+        this.coefficientOfCompression = coefficientOfCompression;
     }
 }
