@@ -70,11 +70,11 @@ public class DefaultImageSplitter implements ImageSplitter {
         }
         for (int widthRectangle = 0; widthRectangle < image.getRectanglesInWidth() - 1; widthRectangle++) {
             int pointX = widthRectangle * width;
-            int pointY = image.getRectanglesInHeight() - height;
+            int pointY = image.getSourceImage().getHeight() - height;
             subimages[image.getRectanglesInHeight() - 1][widthRectangle] = image.getSourceImage().getSubimage(pointX, pointY, width, height);
         }
         int pointX = image.getSourceImage().getWidth() - width;
-        int pointY = image.getRectanglesInHeight() - height;
+        int pointY = image.getSourceImage().getHeight() - height;
         subimages[image.getRectanglesInHeight() - 1][image.getRectanglesInWidth() - 1] = image.getSourceImage().getSubimage(pointX, pointY, width, height);
         image.setSubimages(subimages);
     }
