@@ -1,7 +1,7 @@
 package by.yegorikbaev.mrz.compressor.impl;
 
 import by.yegorikbaev.mrz.bean.SplittedImage;
-import by.yegorikbaev.mrz.compressor.Restorer;
+import by.yegorikbaev.mrz.compressor.ImageRestorer;
 import org.springframework.stereotype.Service;
 
 import javax.validation.constraints.NotNull;
@@ -9,7 +9,7 @@ import java.awt.*;
 import java.awt.image.BufferedImage;
 
 @Service
-public class DefaultRestorer implements Restorer {
+public class DefaultImageRestorer implements ImageRestorer {
 
     @Override
     public BufferedImage restore(@NotNull SplittedImage image) {

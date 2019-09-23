@@ -5,6 +5,6 @@ import by.yegorikbaev.mrz.bean.SplittedImage;
 import java.awt.image.BufferedImage;
 
 @FunctionalInterface
-public interface Restorer {
+public interface ImageRestorer {
     BufferedImage restore(SplittedImage image);
 }

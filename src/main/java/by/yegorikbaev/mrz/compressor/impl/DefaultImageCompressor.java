@@ -20,7 +20,7 @@ public class DefaultImageCompressor implements ImageCompressor {
 
     private WeightsGenerator weightsGenerator;
 
-    private Restorer restorer;
+    private ImageRestorer imageRestorer;
 
     @Autowired
     public void setImageSplitter(ImageSplitter imageSplitter) {
@@ -38,8 +38,8 @@ public class DefaultImageCompressor implements ImageCompressor {
     }
 
     @Autowired
-    public void setRestorer(Restorer restorer) {
-        this.restorer = restorer;
+    public void setImageRestorer(ImageRestorer imageRestorer) {
+        this.imageRestorer = imageRestorer;
     }
 
     @Override
@@ -53,7 +53,7 @@ public class DefaultImageCompressor implements ImageCompressor {
         Matrix secondLayerWeights = firstLayerWeights.transpose();
         Matrix[] resultWeights = train(firstLayerWeights, secondLayerWeights, configuration, vectors);
         convert(splittedImage, resultWeights);
-        return restorer.restore(splittedImage);
+        return imageRestorer.restore(splittedImage);
     }
 
     private static final int RGB_COEFFICIENT = 3;
