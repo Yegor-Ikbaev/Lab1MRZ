@@ -4,10 +4,10 @@ import by.yegorikbaev.mrz.bean.Configuration;
 import by.yegorikbaev.mrz.bean.Matrix;
 import by.yegorikbaev.mrz.bean.SplittedImage;
 import by.yegorikbaev.mrz.compressor.ImageCompressor;
-import by.yegorikbaev.mrz.converter.ImageToMatrixConverter;
-import by.yegorikbaev.mrz.restorer.Restorer;
-import by.yegorikbaev.mrz.splitter.ImageSplitter;
-import by.yegorikbaev.mrz.weightsgenerator.WeightsGenerator;
+import by.yegorikbaev.mrz.compressor.ImageToMatrixConverter;
+import by.yegorikbaev.mrz.compressor.Restorer;
+import by.yegorikbaev.mrz.compressor.ImageSplitter;
+import by.yegorikbaev.mrz.compressor.WeightsGenerator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -60,6 +60,10 @@ public class DefaultImageCompressor implements ImageCompressor {
 
     private void prepareConfiguration(SplittedImage splittedImage, Configuration configuration) {
         configuration.setElementsNumber(splittedImage.getTotalRectangles());
+        double N = configuration.getWidth() * configuration.getHeight() * 3;
+        double L = configuration.getElementsNumber();
+        double coefficientOfCompression = (N * L) / ((N + L) * configuration.getNeuronsNumber() + 2);
+        configuration.setCoefficientOfCompression(coefficientOfCompression);
     }
 
     private Matrix[] train(Matrix firstLayer, Matrix secondLayer, Configuration configuration, Matrix[] vectors) {
@@ -86,7 +90,6 @@ public class DefaultImageCompressor implements ImageCompressor {
             }
             iteration++;
         } while (E > configuration.getMaximalError());
-        System.out.println(iteration);
         return training;
     }
 
