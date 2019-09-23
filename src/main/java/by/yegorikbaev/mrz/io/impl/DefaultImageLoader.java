@@ -1,6 +1,6 @@
-package by.yegorikbaev.mrz.loader.impl;
+package by.yegorikbaev.mrz.io.impl;
 
-import by.yegorikbaev.mrz.loader.ImageLoader;
+import by.yegorikbaev.mrz.io.ImageLoader;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 

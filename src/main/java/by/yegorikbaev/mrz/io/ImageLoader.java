@@ -1,4 +1,4 @@
-package by.yegorikbaev.mrz.loader;
+package by.yegorikbaev.mrz.io;
 
 import java.awt.image.BufferedImage;
 
