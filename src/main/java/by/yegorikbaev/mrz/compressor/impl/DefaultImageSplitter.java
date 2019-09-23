@@ -44,8 +44,8 @@ public class DefaultImageSplitter implements ImageSplitter {
     private void calculateRectangles(SplittedImage image) {
         float widthOfImage = image.getSourceImage().getWidth();
         float heightOfImage = image.getSourceImage().getHeight();
-        int rectanglesInWidth = Double.valueOf(Math.ceil(widthOfImage / image.getWidth())).intValue();
-        int rectanglesInHeight = Double.valueOf(Math.ceil(heightOfImage / image.getHeight())).intValue();
+        int rectanglesInWidth = (int) Math.ceil(widthOfImage / image.getWidth());
+        int rectanglesInHeight = (int) Math.ceil(heightOfImage / image.getHeight());
         int totalRectangles = rectanglesInWidth * rectanglesInHeight;
         image.setRectanglesInWidth(rectanglesInWidth);
         image.setRectanglesInHeight(rectanglesInHeight);
@@ -60,22 +60,26 @@ public class DefaultImageSplitter implements ImageSplitter {
             for (int widthRectangle = 0; widthRectangle < image.getRectanglesInWidth() - 1; widthRectangle++) {
                 int pointX = widthRectangle * width;
                 int pointY = heightRectangle * height;
-                subimages[heightRectangle][widthRectangle] = image.getSourceImage().getSubimage(pointX, pointY, width, height);
+                subimages[heightRectangle][widthRectangle] =
+                        image.getSourceImage().getSubimage(pointX, pointY, width, height);
             }
         }
         for (int heightRectangle = 0; heightRectangle < image.getRectanglesInHeight() - 1; heightRectangle++) {
             int pointX = image.getSourceImage().getWidth() - width;
             int pointY = heightRectangle * height;
-            subimages[heightRectangle][image.getRectanglesInWidth() - 1] = image.getSourceImage().getSubimage(pointX, pointY, width, height);
+            subimages[heightRectangle][image.getRectanglesInWidth() - 1] =
+                    image.getSourceImage().getSubimage(pointX, pointY, width, height);
         }
         for (int widthRectangle = 0; widthRectangle < image.getRectanglesInWidth() - 1; widthRectangle++) {
             int pointX = widthRectangle * width;
             int pointY = image.getSourceImage().getHeight() - height;
-            subimages[image.getRectanglesInHeight() - 1][widthRectangle] = image.getSourceImage().getSubimage(pointX, pointY, width, height);
+            subimages[image.getRectanglesInHeight() - 1][widthRectangle] =
+                    image.getSourceImage().getSubimage(pointX, pointY, width, height);
         }
         int pointX = image.getSourceImage().getWidth() - width;
         int pointY = image.getSourceImage().getHeight() - height;
-        subimages[image.getRectanglesInHeight() - 1][image.getRectanglesInWidth() - 1] = image.getSourceImage().getSubimage(pointX, pointY, width, height);
+        subimages[image.getRectanglesInHeight() - 1][image.getRectanglesInWidth() - 1] =
+                image.getSourceImage().getSubimage(pointX, pointY, width, height);
         image.setSubimages(subimages);
     }
 }
