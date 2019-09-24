@@ -68,7 +68,7 @@ public class DefaultImageCompressor implements ImageCompressor {
         configuration.setTotalRectangles(splittedImage.getTotalRectangles());
         int pixelsInRectangle = configuration.getWidth() * configuration.getHeight() * RGB_COEFFICIENT;
         configuration.setPixelsInRectangle(pixelsInRectangle);
-        double coefficientOfCompression = (pixelsInRectangle * configuration.getTotalRectangles()) /
+        double coefficientOfCompression = (1.0 * pixelsInRectangle * configuration.getTotalRectangles()) /
                 ((pixelsInRectangle + configuration.getTotalRectangles()) * configuration.getNeuronsNumber() + 2);
         configuration.setCoefficientOfCompression(coefficientOfCompression);
     }
