@@ -5,7 +5,7 @@ import org.springframework.context.annotation.PropertySource;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
-@PropertySource("classpath:configuration.properties")
+@PropertySource("classpath:application.properties")
 @Component
 @Scope("prototype")
 public class Configuration {
@@ -30,10 +30,10 @@ public class Configuration {
     @Value("${configuration.format}")
     private String format;
 
-    @Value("${configuration.savePath}")
+    @Value("#{T(java.lang.System).getProperty(\"user.dir\").concat('${configuration.savePath}')}")
     private String pathToSave;
 
-    @Value("${configuration.sourcePath}")
+    @Value("#{T(java.lang.System).getProperty(\"user.dir\").concat('${configuration.sourcePath}')}")
     private String pathToSource;
 
     private double coefficientOfCompression;
