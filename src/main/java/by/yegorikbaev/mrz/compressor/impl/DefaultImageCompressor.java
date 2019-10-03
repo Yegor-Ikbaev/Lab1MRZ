@@ -119,7 +119,7 @@ public class DefaultImageCompressor implements ImageCompressor {
         int indexOfMatrix = 0;
         for (int indexOfWidth = 0; indexOfWidth < image.getRectanglesInWidth(); indexOfWidth++) {
             for (int indexOfHeight = 0; indexOfHeight < image.getRectanglesInHeight(); indexOfHeight++) {
-                convertSubimage(image.getSubimages()[indexOfWidth][indexOfHeight],
+                convertSubimage(image.getSubimages()[indexOfHeight][indexOfWidth],
                         image, matrices[indexOfMatrix++].getAsArray());
             }
         }
@@ -128,7 +128,7 @@ public class DefaultImageCompressor implements ImageCompressor {
     private void convertSubimage(BufferedImage subimage, SplittedImage image, double[][] matrix) {
         for (int indexOfWidth = 0; indexOfWidth < subimage.getWidth(); indexOfWidth++) {
             for (int indexOfHeight = 0; indexOfHeight < subimage.getHeight(); indexOfHeight++) {
-                int coefficient = RGB_COEFFICIENT * (indexOfWidth + indexOfHeight * image.getHeight());
+                int coefficient = RGB_COEFFICIENT * (indexOfHeight + indexOfWidth * image.getHeight());
                 int r = normalizeColor(matrix[0][coefficient]);
                 int g = normalizeColor(matrix[0][1 + coefficient]);
                 int b = normalizeColor(matrix[0][2 + coefficient]);

@@ -61,7 +61,7 @@ public class DefaultImageSplitter implements ImageSplitter {
     }
 
     private void split(SplittedImage image) {
-        BufferedImage[][] subimages = new BufferedImage[image.getRectanglesInWidth()][image.getRectanglesInHeight()];
+        BufferedImage[][] subimages = new BufferedImage[image.getRectanglesInHeight()][image.getRectanglesInWidth()];
         int width = image.getWidth();
         int height = image.getHeight();
         for (int heightRectangle = 0; heightRectangle < image.getRectanglesInHeight() - 1; heightRectangle++) {

@@ -20,7 +20,7 @@ public class ImageToMatrixConverter implements Converter<SplittedImage, Matrix[]
         int index = 0;
         for (int indexInWidth = 0; indexInWidth < image.getRectanglesInWidth(); indexInWidth++) {
             for (int indexInHeight = 0; indexInHeight < image.getRectanglesInHeight(); indexInHeight++) {
-                matrices[index++] = convertSubimage(image.getSubimages()[indexInWidth][indexInHeight], image);
+                matrices[index++] = convertSubimage(image.getSubimages()[indexInHeight][indexInWidth], image);
             }
         }
         return matrices;
@@ -32,7 +32,7 @@ public class ImageToMatrixConverter implements Converter<SplittedImage, Matrix[]
         for (int i = 0; i < subimage.getWidth(); i++) {
             for (int j = 0; j < subimage.getHeight(); j++) {
                 Color color = new Color(subimage.getRGB(i, j));
-                int coefficient = 3 * (i + j * image.getHeight());
+                int coefficient = 3 * (j + i * image.getHeight());
                 matrix[0][coefficient] = normalizeColor(color.getRed());
                 matrix[0][1 + coefficient] = normalizeColor(color.getGreen());
                 matrix[0][2 + coefficient] = normalizeColor(color.getBlue());
