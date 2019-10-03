@@ -3,12 +3,12 @@ package by.yegorikbaev.mrz.compressor.impl;
 import by.yegorikbaev.mrz.bean.Configuration;
 import by.yegorikbaev.mrz.bean.Matrix;
 import by.yegorikbaev.mrz.bean.SplittedImage;
+import by.yegorikbaev.mrz.bean.TrainingResult;
 import by.yegorikbaev.mrz.compressor.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.validation.constraints.NotNull;
-import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.util.logging.Logger;
 
@@ -20,6 +20,8 @@ public class DefaultImageCompressor implements ImageCompressor {
     private ImageSplitter imageSplitter;
 
     private ImageToMatrixConverter imageConverter;
+
+    private MatrixToImageConverter matrixConverter;
 
     private WeightsGenerator weightsGenerator;
 
@@ -33,6 +35,11 @@ public class DefaultImageCompressor implements ImageCompressor {
     @Autowired
     public void setImageConverter(ImageToMatrixConverter imageConverter) {
         this.imageConverter = imageConverter;
+    }
+
+    @Autowired
+    public void setMatrixConverter(MatrixToImageConverter matrixConverter) {
+        this.matrixConverter = matrixConverter;
     }
 
     @Autowired
@@ -57,9 +64,8 @@ public class DefaultImageCompressor implements ImageCompressor {
         long beforeTraining = System.currentTimeMillis();
         Matrix[] resultWeights = train(firstLayerWeights, secondLayerWeights, configuration, vectors);
         long afterTraining = System.currentTimeMillis();
-        convert(splittedImage, resultWeights);
         log(configuration, afterTraining - beforeTraining);
-        return imageRestorer.restore(splittedImage);
+        return imageRestorer.restore(matrixConverter.convert(new TrainingResult(splittedImage, resultWeights)));
     }
 
     private static final int RGB_COEFFICIENT = 3;
@@ -113,37 +119,6 @@ public class DefaultImageCompressor implements ImageCompressor {
             error += value * value;
         }
         return error;
-    }
-
-    private void convert(@NotNull SplittedImage image, Matrix[] matrices) {
-        int indexOfMatrix = 0;
-        for (int indexOfWidth = 0; indexOfWidth < image.getRectanglesInWidth(); indexOfWidth++) {
-            for (int indexOfHeight = 0; indexOfHeight < image.getRectanglesInHeight(); indexOfHeight++) {
-                convertSubimage(image.getSubimages()[indexOfHeight][indexOfWidth],
-                        image, matrices[indexOfMatrix++].getAsArray());
-            }
-        }
-    }
-
-    private void convertSubimage(BufferedImage subimage, SplittedImage image, double[][] matrix) {
-        for (int indexOfWidth = 0; indexOfWidth < subimage.getWidth(); indexOfWidth++) {
-            for (int indexOfHeight = 0; indexOfHeight < subimage.getHeight(); indexOfHeight++) {
-                int coefficient = RGB_COEFFICIENT * (indexOfHeight + indexOfWidth * image.getHeight());
-                int r = normalizeColor(matrix[0][coefficient]);
-                int g = normalizeColor(matrix[0][1 + coefficient]);
-                int b = normalizeColor(matrix[0][2 + coefficient]);
-                subimage.setRGB(indexOfWidth, indexOfHeight, new Color(r, g, b).getRGB());
-            }
-        }
-    }
-
-    private static final int MAX_COLOR_VALUE = 255;
-
-    private static final int MIN_COLOR_VALUE = 0;
-
-    private int normalizeColor(double value) {
-        int result = (int) (MAX_COLOR_VALUE * (value + 1) / 2);
-        return Math.max(Math.min(result, MAX_COLOR_VALUE), MIN_COLOR_VALUE);
     }
 
     private void log(Configuration configuration, long time) {
