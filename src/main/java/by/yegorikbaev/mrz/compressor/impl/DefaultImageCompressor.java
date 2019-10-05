@@ -25,6 +25,8 @@ public class DefaultImageCompressor implements ImageCompressor {
 
     private WeightsGenerator weightsGenerator;
 
+    private Trainer trainer;
+
     private ImageRestorer imageRestorer;
 
     @Autowired
@@ -52,6 +54,11 @@ public class DefaultImageCompressor implements ImageCompressor {
         this.imageRestorer = imageRestorer;
     }
 
+    @Autowired
+    public void setTrainer(Trainer trainer) {
+        this.trainer = trainer;
+    }
+
     @Override
     public BufferedImage compress(@NotNull BufferedImage sourceImage, @NotNull Configuration configuration) {
         SplittedImage splittedImage =
@@ -62,7 +69,7 @@ public class DefaultImageCompressor implements ImageCompressor {
                 weightsGenerator.generate(configuration.getPixelsInRectangle(), configuration.getNeuronsNumber());
         Matrix secondLayerWeights = firstLayerWeights.transpose();
         long beforeTraining = System.currentTimeMillis();
-        Matrix[] resultWeights = train(firstLayerWeights, secondLayerWeights, configuration, vectors);
+        Matrix[] resultWeights = trainer.train(firstLayerWeights, secondLayerWeights, configuration, vectors);
         long afterTraining = System.currentTimeMillis();
         log(configuration, afterTraining - beforeTraining);
         return imageRestorer.restore(matrixConverter.convert(new TrainingResult(splittedImage, resultWeights)));
@@ -77,48 +84,6 @@ public class DefaultImageCompressor implements ImageCompressor {
         double coefficientOfCompression = (1.0 * pixelsInRectangle * configuration.getTotalRectangles()) /
                 ((pixelsInRectangle + configuration.getTotalRectangles()) * configuration.getNeuronsNumber() + 2);
         configuration.setCoefficientOfCompression(coefficientOfCompression);
-    }
-
-    private Matrix[] train(Matrix firstLayer, Matrix secondLayer, Configuration configuration, Matrix[] vectors) {
-        Matrix[] training = new Matrix[vectors.length];
-        double summaryError;
-        int iteration = 0;
-        do {
-            summaryError = 0.0;
-            int indexOfMatrix = 0;
-            for (Matrix vector : vectors) {
-                Matrix tempVector = vector.multiply(firstLayer);
-                Matrix resultVector = tempVector.multiply(secondLayer);
-                Matrix delta = resultVector.minus(vector);
-                firstLayer.update(firstLayer.minus(vector
-                        .transpose()
-                        .multiply(configuration.getCoefficientOfTraining())
-                        .multiply(delta)
-                        .multiply(secondLayer.transpose())));
-                secondLayer.update(secondLayer.minus(tempVector
-                        .transpose()
-                        .multiply(configuration.getCoefficientOfTraining())
-                        .multiply(delta)));
-            }
-            for (Matrix vector : vectors) {
-                Matrix resultVector = vector.multiply(firstLayer).multiply(secondLayer);
-                training[indexOfMatrix++] = resultVector;
-                Matrix delta = resultVector.minus(vector);
-                summaryError += calculateError(delta);
-            }
-            iteration++;
-            LOGGER.info(String.format("Summary error = %f in iteration = %d", summaryError, iteration));
-        } while (summaryError > configuration.getMaximalError());
-        LOGGER.info(String.format("Final summary error = %f in iteration = %d", summaryError, iteration));
-        return training;
-    }
-
-    private double calculateError(Matrix matrix) {
-        double error = 0.0;
-        for (double value : matrix.getAsArray()[0]) {
-            error += value * value;
-        }
-        return error;
     }
 
     private void log(Configuration configuration, long time) {
