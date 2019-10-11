@@ -4,32 +4,44 @@ import by.yegorikbaev.mrz.bean.Configuration;
 import by.yegorikbaev.mrz.compressor.ImageCompressor;
 import by.yegorikbaev.mrz.io.ImageLoader;
 import by.yegorikbaev.mrz.io.ImageSaver;
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.support.ClassPathXmlApplicationContext;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
-import javax.validation.constraints.NotNull;
 import java.awt.image.BufferedImage;
 
+/**
+ * Bean for starting compression
+ * Group 721702
+ * @author  Yegor Ikbaev
+ * @version 1.0
+ * @since   2019-11-10
+ */
+@Component
 class ApplicationRunner {
 
-    private ApplicationContext context = new ClassPathXmlApplicationContext("applicationContext.xml");
+    private ImageCompressor compressor;
 
-    private ImageCompressor compressor = context.getBean("defaultImageCompressor", ImageCompressor.class);
+    private ImageLoader loader;
 
-    private ImageLoader loader = context.getBean("defaultImageLoader", ImageLoader.class);
+    private ImageSaver saver;
 
-    private ImageSaver saver = context.getBean("defaultImageSaver", ImageSaver.class);
+    public ApplicationRunner(ImageCompressor compressor, ImageLoader loader, ImageSaver saver) {
+        this.compressor = compressor;
+        this.loader = loader;
+        this.saver = saver;
+    }
 
-    void run(@NotNull Configuration configuration) {
-        setValues(configuration);
+    private Configuration configuration;
+
+    @Autowired
+    public void setConfiguration(Configuration configuration) {
+        this.configuration = configuration;
+    }
+
+    void run() {
         BufferedImage sourceImage = loader.load(configuration.getPathToSource());
         saver.save(sourceImage, configuration.getPathToSource(), configuration.getFormat());
         BufferedImage targetImage = compressor.compress(sourceImage, configuration);
         saver.save(targetImage, configuration.getPathToSave(), configuration.getFormat());
-    }
-
-    private void setValues(Configuration targetConfiguration) {
-        Configuration defaultConfiguration = context.getBean("configuration", Configuration.class);
-        targetConfiguration.setConfiguration(defaultConfiguration);
     }
 }

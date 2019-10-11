@@ -9,6 +9,13 @@ import javax.validation.constraints.NotNull;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 
+/**
+ * Converts source image to matrix of colors
+ * Group 721702
+ * @author  Yegor Ikbaev
+ * @version 1.0
+ * @since   2019-11-10
+ */
 @Component
 public class ImageToMatrixConverter implements Converter<SplittedImage, Matrix[]> {
 

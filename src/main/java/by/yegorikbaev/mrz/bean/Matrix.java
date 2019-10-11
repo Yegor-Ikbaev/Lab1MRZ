@@ -5,6 +5,13 @@ import org.ojalgo.matrix.PrimitiveMatrix;
 
 import javax.validation.constraints.NotNull;
 
+/**
+ * Representation of matrix
+ * Group 721702
+ * @author  Yegor Ikbaev
+ * @version 1.0
+ * @since   2019-11-10
+ */
 public class Matrix {
 
     private PrimitiveMatrix source;

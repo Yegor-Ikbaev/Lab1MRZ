@@ -2,14 +2,18 @@ package by.yegorikbaev.mrz.bean;
 
 import javax.validation.constraints.NotNull;
 
+/**
+ * Contains result of training
+ * Group 721702
+ * @author  Yegor Ikbaev
+ * @version 1.0
+ * @since   2019-11-10
+ */
 public class TrainingResult {
 
     private SplittedImage image;
 
     private Matrix[] weights;
-
-    public TrainingResult() {
-    }
 
     public TrainingResult(@NotNull SplittedImage image, @NotNull Matrix[] weights) {
         this.image = image;

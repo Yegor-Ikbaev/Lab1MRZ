@@ -5,6 +5,13 @@ import org.springframework.context.annotation.PropertySource;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
+/**
+ * Configuration for neural network
+ * Group 721702
+ * @author  Yegor Ikbaev
+ * @version 1.0
+ * @since   2019-11-10
+ */
 @PropertySource("classpath:application.properties")
 @Component
 @Scope("prototype")

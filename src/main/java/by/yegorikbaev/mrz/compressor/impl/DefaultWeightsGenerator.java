@@ -7,6 +7,13 @@ import org.springframework.stereotype.Service;
 import java.security.SecureRandom;
 import java.util.logging.Logger;
 
+/**
+ * Implementation of generator of weights
+ * Group 721702
+ * @author  Yegor Ikbaev
+ * @version 1.0
+ * @since   2019-11-10
+ */
 @Service
 public class DefaultWeightsGenerator implements WeightsGenerator {
 

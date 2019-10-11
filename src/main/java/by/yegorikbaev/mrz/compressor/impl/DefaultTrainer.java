@@ -9,6 +9,13 @@ import javax.validation.constraints.NotNull;
 import java.util.Arrays;
 import java.util.logging.Logger;
 
+/**
+ * Implementation of trainer of neural network
+ * Group 721702
+ * @author  Yegor Ikbaev
+ * @version 1.0
+ * @since   2019-11-10
+ */
 @Service
 public class DefaultTrainer implements Trainer {
 

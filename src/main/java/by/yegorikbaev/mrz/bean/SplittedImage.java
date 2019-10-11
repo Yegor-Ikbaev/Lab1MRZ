@@ -3,6 +3,13 @@ package by.yegorikbaev.mrz.bean;
 import javax.validation.constraints.NotNull;
 import java.awt.image.BufferedImage;
 
+/**
+ * Representation of image
+ * Group 721702
+ * @author  Yegor Ikbaev
+ * @version 1.0
+ * @since   2019-11-10
+ */
 public class SplittedImage {
 
     private BufferedImage sourceImage;
@@ -12,8 +19,6 @@ public class SplittedImage {
     private int width;
 
     private int height;
-
-    private boolean isCrossed;
 
     private int totalRectangles;
 
@@ -51,14 +56,6 @@ public class SplittedImage {
 
     public void setHeight(int height) {
         this.height = height;
-    }
-
-    public boolean isCrossed() {
-        return isCrossed;
-    }
-
-    public void setCrossed(boolean crossed) {
-        isCrossed = crossed;
     }
 
     public int getTotalRectangles() {
