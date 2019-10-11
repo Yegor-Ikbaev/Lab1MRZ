@@ -31,7 +31,7 @@ public class MatrixToImageConverter implements Converter<TrainingResult, Splitte
         for (int indexOfWidth = 0; indexOfWidth < result.getImage().getRectanglesInWidth(); indexOfWidth++) {
             for (int indexOfHeight = 0; indexOfHeight < result.getImage().getRectanglesInHeight(); indexOfHeight++) {
                 convertSubimage(result.getImage().getSubimages()[indexOfHeight][indexOfWidth],
-                        result.getImage(), result.getWeights()[indexOfMatrix++].getAsArray());
+                        result.getImage(), result.getWeights().get(indexOfMatrix++).getAsArray());
             }
         }
         return result.getImage();

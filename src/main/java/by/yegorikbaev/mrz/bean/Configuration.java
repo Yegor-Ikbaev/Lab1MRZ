@@ -17,53 +17,33 @@ import org.springframework.stereotype.Component;
 @Scope("prototype")
 public class Configuration {
 
-    @Value("${configuration.m}")
     private int widthOfRectangle;
 
-    @Value("${configuration.n}")
     private int heightOfRectangle;
 
     private int totalRectangles;
 
-    @Value("${configuration.p}")
     private int neuronsNumber;
 
-    @Value("${configuration.a}")
     private double coefficientOfTraining;
 
-    @Value("${configuration.e}")
     private double maximalError;
 
-    @Value("${configuration.format}")
     private String format;
 
-    @Value("#{T(java.lang.System).getProperty(\"user.dir\").concat('${configuration.savePath}')}")
     private String pathToSave;
 
-    @Value("#{T(java.lang.System).getProperty(\"user.dir\").concat('${configuration.sourcePath}')}")
     private String pathToSource;
 
     private double coefficientOfCompression;
 
     private int pixelsInRectangle;
 
-    public void setConfiguration(Configuration configuration) {
-        widthOfRectangle = configuration.widthOfRectangle;
-        heightOfRectangle = configuration.heightOfRectangle;
-        neuronsNumber = configuration.neuronsNumber;
-        coefficientOfTraining = configuration.coefficientOfTraining;
-        coefficientOfCompression = configuration.coefficientOfCompression;
-        maximalError = configuration.maximalError;
-        format = configuration.format;
-        pathToSave = configuration.pathToSave;
-        pathToSource = configuration.pathToSource;
-        pixelsInRectangle = configuration.pixelsInRectangle;
-    }
-
     public int getWidth() {
         return widthOfRectangle;
     }
 
+    @Value("${configuration.m}")
     public void setWidth(int widthOfRectangle) {
         this.widthOfRectangle = widthOfRectangle;
     }
@@ -72,6 +52,7 @@ public class Configuration {
         return heightOfRectangle;
     }
 
+    @Value("${configuration.n}")
     public void setHeight(int heightOfRectangle) {
         this.heightOfRectangle = heightOfRectangle;
     }
@@ -88,6 +69,7 @@ public class Configuration {
         return neuronsNumber;
     }
 
+    @Value("${configuration.p}")
     public void setNeuronsNumber(int neuronsNumber) {
         this.neuronsNumber = neuronsNumber;
     }
@@ -96,6 +78,7 @@ public class Configuration {
         return coefficientOfTraining;
     }
 
+    @Value("${configuration.a}")
     public void setCoefficientOfTraining(double coefficientOfTraining) {
         this.coefficientOfTraining = coefficientOfTraining;
     }
@@ -104,6 +87,7 @@ public class Configuration {
         return maximalError;
     }
 
+    @Value("${configuration.e}")
     public void setMaximalError(double maximalError) {
         this.maximalError = maximalError;
     }
@@ -112,6 +96,7 @@ public class Configuration {
         return format;
     }
 
+    @Value("${configuration.format}")
     public void setFormat(String format) {
         this.format = format;
     }
@@ -120,6 +105,7 @@ public class Configuration {
         return pathToSave;
     }
 
+    @Value("#{T(java.lang.System).getProperty(\"user.dir\").concat('${configuration.savePath}')}")
     public void setPathToSave(String pathToSave) {
         this.pathToSave = pathToSave;
     }
@@ -136,6 +122,7 @@ public class Configuration {
         return pathToSource;
     }
 
+    @Value("#{T(java.lang.System).getProperty(\"user.dir\").concat('${configuration.sourcePath}')}")
     public void setPathToSource(String pathToSource) {
         this.pathToSource = pathToSource;
     }

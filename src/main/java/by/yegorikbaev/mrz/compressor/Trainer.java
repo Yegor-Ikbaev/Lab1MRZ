@@ -3,6 +3,8 @@ package by.yegorikbaev.mrz.compressor;
 import by.yegorikbaev.mrz.bean.Configuration;
 import by.yegorikbaev.mrz.bean.Matrix;
 
+import java.util.List;
+
 /**
  * Interface for trainer of neural networks
  * Group 721702
@@ -12,5 +14,5 @@ import by.yegorikbaev.mrz.bean.Matrix;
  */
 @FunctionalInterface
 public interface Trainer {
-    Matrix[] train(Matrix firstLayer, Matrix secondLayer, Configuration configuration, Matrix[] vectors);
+    List<Matrix> train(Matrix firstLayer, Matrix secondLayer, Configuration configuration, List<Matrix> vectors);
 }

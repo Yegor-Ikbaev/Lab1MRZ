@@ -1,6 +1,7 @@
 package by.yegorikbaev.mrz.bean;
 
 import javax.validation.constraints.NotNull;
+import java.util.List;
 
 /**
  * Contains result of training
@@ -13,9 +14,9 @@ public class TrainingResult {
 
     private SplittedImage image;
 
-    private Matrix[] weights;
+    private List<Matrix> weights;
 
-    public TrainingResult(@NotNull SplittedImage image, @NotNull Matrix[] weights) {
+    public TrainingResult(@NotNull SplittedImage image, @NotNull List<Matrix> weights) {
         this.image = image;
         this.weights = weights;
     }
@@ -28,11 +29,11 @@ public class TrainingResult {
         this.image = image;
     }
 
-    public Matrix[] getWeights() {
+    public List<Matrix> getWeights() {
         return weights;
     }
 
-    public void setWeights(Matrix[] weights) {
+    public void setWeights(List<Matrix> weights) {
         this.weights = weights;
     }
 }

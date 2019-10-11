@@ -8,6 +8,8 @@ import org.springframework.stereotype.Component;
 import javax.validation.constraints.NotNull;
 import java.awt.*;
 import java.awt.image.BufferedImage;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Converts source image to matrix of colors
@@ -17,17 +19,16 @@ import java.awt.image.BufferedImage;
  * @since   2019-11-10
  */
 @Component
-public class ImageToMatrixConverter implements Converter<SplittedImage, Matrix[]> {
+public class ImageToMatrixConverter implements Converter<SplittedImage, List<Matrix>> {
 
     private static final int MAX_COLOR_VALUE = 255;
 
     @Override
-    public Matrix[] convert(@NotNull SplittedImage image) {
-        Matrix[] matrices = new Matrix[image.getTotalRectangles()];
-        int index = 0;
+    public List<Matrix> convert(@NotNull SplittedImage image) {
+        List<Matrix> matrices = new ArrayList<>();
         for (int indexInWidth = 0; indexInWidth < image.getRectanglesInWidth(); indexInWidth++) {
             for (int indexInHeight = 0; indexInHeight < image.getRectanglesInHeight(); indexInHeight++) {
-                matrices[index++] = convertSubimage(image.getSubimages()[indexInHeight][indexInWidth], image);
+                matrices.add(convertSubimage(image.getSubimages()[indexInHeight][indexInWidth], image));
             }
         }
         return matrices;

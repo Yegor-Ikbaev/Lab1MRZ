@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 
 import javax.validation.constraints.NotNull;
 import java.awt.image.BufferedImage;
+import java.util.List;
 import java.util.logging.Logger;
 
 /**
@@ -71,13 +72,15 @@ public class DefaultImageCompressor implements ImageCompressor {
         SplittedImage splittedImage =
                 imageSplitter.split(sourceImage, configuration.getWidth(), configuration.getHeight());
         prepareConfiguration(splittedImage, configuration);
-        Matrix[] vectors = imageConverter.convert(splittedImage);
+        List<Matrix> vectors = imageConverter.convert(splittedImage);
         Matrix firstLayerWeights =
                 weightsGenerator.generate(configuration.getPixelsInRectangle(), configuration.getNeuronsNumber());
         Matrix secondLayerWeights = firstLayerWeights.transpose();
+
         long beforeTraining = System.currentTimeMillis();
-        Matrix[] resultWeights = trainer.train(firstLayerWeights, secondLayerWeights, configuration, vectors);
+        List<Matrix> resultWeights = trainer.train(firstLayerWeights, secondLayerWeights, configuration, vectors);
         long afterTraining = System.currentTimeMillis();
+
         log(configuration, afterTraining - beforeTraining);
         return imageRestorer.restore(matrixConverter.convert(new TrainingResult(splittedImage, resultWeights)));
     }
